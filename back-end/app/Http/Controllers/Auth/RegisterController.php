@@ -55,11 +55,7 @@ class RegisterController extends Controller
 
         $token = $user->createToken('access_token')->plainTextToken;
 
-        $userDto = new UserDto([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email
-        ]);
+        $userDto = new UserDto($user->toArray());
 
         return response()->json([
             'user' => $userDto->toArray(),

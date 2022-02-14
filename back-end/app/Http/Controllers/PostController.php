@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Dtos\PostDto;
 use App\Post;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,18 +16,25 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Post[]
+     * @return JsonResponse
      */
-    public function index(): array
+    public function index(): JsonResponse
     {
-        return Post::all()->toArray();
+        $posts = Post::all()->toArray();
+
+        $postDtos = array_map(function ($post) {
+            $post = new PostDto($post);
+            return $post->toArray();
+        }, $posts);
+
+        return response()->json($postDtos, 201);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
-     * @return Post|MessageBag
+     * @return JsonResponse|MessageBag
      */
     public function store(Request $request)
     {
@@ -50,18 +59,22 @@ class PostController extends Controller
 
         $post->save();
 
-        return $post;
+        $postDto = new PostDto($post->toArray());
+
+        return response()->json($postDto->toArray(), 201);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  Post  $post
-     * @return Post
+     * @return JsonResponse
      */
-    public function show(Post $post): Post
+    public function show(Post $post): JsonResponse
     {
-        return $post;
+        $postDto = new PostDto($post->toArray());
+
+        return response()->json($postDto->toArray(), 201);
     }
 
     /**
@@ -69,7 +82,7 @@ class PostController extends Controller
      *
      * @param  Request  $request
      * @param  Post  $post
-     * @return Post|MessageBag
+     * @return JsonResponse|MessageBag
      */
     public function update(Request $request, Post $post)
     {
@@ -87,18 +100,22 @@ class PostController extends Controller
             'content' => $data['content']
         ]);
 
-        return $post;
+        $postDto = new PostDto($post->toArray());
+
+        return response()->json($postDto->toArray(), 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Post $post
-     * @return bool
+     * @return JsonResponse
      * @throws Exception
      */
-    public function destroy(Post $post): bool
+    public function destroy(Post $post): JsonResponse
     {
-        return $post->delete();
+        $result = $post->delete();
+
+        return response()->json($result, 201);
     }
 }

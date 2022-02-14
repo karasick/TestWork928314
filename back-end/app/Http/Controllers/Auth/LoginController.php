@@ -66,11 +66,7 @@ class LoginController extends Controller
 
         $token = $user_candidate->createToken('access_token')->plainTextToken;
 
-        $userDto = new UserDto([
-            'id' => $user_candidate->id,
-            'name' => $user_candidate->name,
-            'email' => $user_candidate->email
-        ]);
+        $userDto = new UserDto($user_candidate->toArray());
 
         return response()->json([
             'user' => $userDto->toArray(),
