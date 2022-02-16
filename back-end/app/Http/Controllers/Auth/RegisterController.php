@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\ValidationException;
+use App\Http\Controllers\Auth\Dtos\AuthUserDto;
+use App\Http\Controllers\Auth\Dtos\UserDto;
 use App\Http\Controllers\Controller;
-use App\Http\Dtos\UserDto;
-use App\User;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator as RequestValidator;
-use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -34,7 +35,31 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+
     /**
+     * @OA\Post(
+     *      path="/register",
+     *      operationId="registerUser",
+     *      tags={"Auth"},
+     *      summary="Register new user",
+     *      description="Returns authenticated user data",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/UserDataRequest")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/AuthUserDto")
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation Exception",
+     *          @OA\JsonContent(ref="#/components/schemas/ValidationException")
+     *      )
+     * )
+     *
+     *
      * Handle a registration request for the application.
      *
      * @param Request $request
@@ -45,11 +70,11 @@ class RegisterController extends Controller
     {
         $data_validator = $this->validator($request->all());
 
-        $data = $data_validator->validate();
-
         if ($data_validator->fails()) {
-            return response()->json($data, 400);
+            throw new ValidationException($data_validator->errors()->all());
         }
+
+        $data = $data_validator->valid();
 
         $user = $this->create($data);
 
@@ -57,10 +82,9 @@ class RegisterController extends Controller
 
         $userDto = new UserDto($user->toArray());
 
-        return response()->json([
-            'user' => $userDto->toArray(),
-            'token' => $token
-        ], 201);
+        $authUserDto = new AuthUserDto($token, $userDto->toArray());
+
+        return response()->json($authUserDto->toArray(), 201);
     }
 
     /**

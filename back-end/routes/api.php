@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Post\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*

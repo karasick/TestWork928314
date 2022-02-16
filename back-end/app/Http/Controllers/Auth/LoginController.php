@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\ValidationException;
+use App\Http\Controllers\Auth\Dtos\AuthUserDto;
+use App\Http\Controllers\Auth\Dtos\UserDto;
 use App\Http\Controllers\Controller;
-use App\Http\Dtos\UserDto;
-use App\User;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator as RequestValidator;
-use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class LoginController extends Controller
 {
@@ -36,6 +38,33 @@ class LoginController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *      path="/login",
+     *      operationId="loginUser",
+     *      tags={"Auth"},
+     *      summary="Login registered user",
+     *      description="Returns authenticated user data",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/UserCredentialsRequest")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/AuthUserDto")
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request",
+     *          @OA\JsonContent(ref="#/components/schemas/BadRequestException")
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation Exception",
+     *          @OA\JsonContent(ref="#/components/schemas/ValidationException")
+     *      )
+     * )
+     *
      * Handle a login request to the application.
      *
      * @param Request $request
@@ -45,33 +74,30 @@ class LoginController extends Controller
     public function login(Request $request): JsonResponse
     {
         $data_validator = $this->validator($request->all());
-        $data = $data_validator->validate();
+
         if ($data_validator->fails()) {
-            return response()->json($data, 400);
+            throw new ValidationException($data_validator->errors()->all());
         }
+
+        $data = $data_validator->valid();
 
         $user_candidate = User::where('email', $data['email'])->first();
         if(!$user_candidate) {
-            return response()->json([
-                'message' => 'No user found with email: ' . $data['email']
-            ], 400);
+            throw new BadRequestException('No user found with email: ' . $data['email']);
         }
 
         $is_password_valid = Hash::check($data['password'], $user_candidate->password);
         if(!$is_password_valid) {
-            return response()->json([
-                'message' => 'Invalid password.'
-            ], 400);
+            throw new BadRequestException('Invalid password.');
         }
 
         $token = $user_candidate->createToken('access_token')->plainTextToken;
 
         $userDto = new UserDto($user_candidate->toArray());
 
-        return response()->json([
-            'user' => $userDto->toArray(),
-            'token' => $token
-        ], 201);
+        $authUserDto = new AuthUserDto($token, $userDto->toArray());
+
+        return response()->json($authUserDto->toArray(), 201);
     }
 
     /**
@@ -89,6 +115,23 @@ class LoginController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *      path="/logout",
+     *      operationId="logoutUser",
+     *      tags={"Auth"},
+     *      summary="Logout authenticated post",
+     *      description="Disable authenticated user token and returns no content",
+     *      @OA\Response(
+     *          response=204,
+     *          description="Successful operation"
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      )
+     * )
+     *
+     *
      * Log the user out of the application.
      *
      * @param Request $request
@@ -98,6 +141,6 @@ class LoginController extends Controller
     {
         Auth::user()->tokens()->delete();
 
-        return response()->json([], 204);
+        return response()->json(null, 204);
     }
 }
