@@ -10,7 +10,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8080/api",
+            "url": "http://localhost:8000/api",
             "description": "Local API Server"
         }
     ],
@@ -34,7 +34,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
@@ -75,6 +75,18 @@
                 "summary": "Logout authenticated post",
                 "description": "Disable authenticated user token and returns no content",
                 "operationId": "logoutUser",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer Autorization Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
+                        }
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Successful operation"
@@ -104,7 +116,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
@@ -123,6 +135,43 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/checkAccessToken": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check registered user access token",
+                "description": "Returns authenticated user data",
+                "operationId": "checkUserAccessToken",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer Autorization Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthUserDto"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 }
             }
@@ -166,6 +215,18 @@
                 "summary": "Store new post",
                 "description": "Returns stored post data",
                 "operationId": "storePost",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer Autorization Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -177,7 +238,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
@@ -218,7 +279,8 @@
                         "description": "Post id",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": "1"
                         }
                     }
                 ],
@@ -252,7 +314,18 @@
                         "description": "Post id",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": "1"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer Autorization Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
                         }
                     }
                 ],
@@ -267,7 +340,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
@@ -309,7 +382,18 @@
                         "description": "Post id",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": "1"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer Autorization Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
                         }
                     }
                 ],

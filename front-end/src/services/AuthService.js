@@ -29,7 +29,7 @@ export default class PostService {
   }
 
   static async refresh () {
-    const { data } = await $host.get('/api/refresh')
+    const { data } = await $authHost.get('/api/checkAccessToken')
     return data
   }
 }

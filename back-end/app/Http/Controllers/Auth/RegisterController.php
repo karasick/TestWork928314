@@ -48,7 +48,7 @@ class RegisterController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UserDataRequest")
      *      ),
      *      @OA\Response(
-     *          response=200,
+     *          response=201,
      *          description="Successful operation",
      *          @OA\JsonContent(ref="#/components/schemas/AuthUserDto")
      *      ),

@@ -33,6 +33,11 @@ export default {
 
       saveUserData(commit, responseData)
     },
+    async checkAuth ({ commit }) {
+      const responseData = await AuthService.refresh()
+
+      saveUserData(commit, responseData)
+    },
     async logout ({ commit }) {
       await AuthService.logout()
 

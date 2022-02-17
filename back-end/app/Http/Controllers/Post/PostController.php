@@ -51,7 +51,7 @@ class PostController extends Controller
 
         $paginationDto = new PostPaginationDto($postDtos, $posts->toArray());
 
-        return response()->json($paginationDto->toArray(), 201);
+        return response()->json($paginationDto->toArray());
     }
 
     /**
@@ -61,12 +61,22 @@ class PostController extends Controller
      *      tags={"Posts"},
      *      summary="Store new post",
      *      description="Returns stored post data",
+     *      @OA\Parameter(
+     *          name="Authorization",
+     *          description="Bearer Autorization Token",
+     *          required=true,
+     *          in="header",
+     *          @OA\Schema(
+     *              type="string",
+     *              example="Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
+     *          )
+     *      ),
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/PostStoreRequest")
      *      ),
      *      @OA\Response(
-     *          response=200,
+     *          response=201,
      *          description="Successful operation",
      *          @OA\JsonContent(ref="#/components/schemas/PostDto")
      *      ),
@@ -129,7 +139,8 @@ class PostController extends Controller
      *          required=true,
      *          in="path",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="integer",
+     *              example="1"
      *          )
      *      ),
      *      @OA\Response(
@@ -153,7 +164,7 @@ class PostController extends Controller
     {
         $postDto = new PostDto($post->toArray());
 
-        return response()->json($postDto->toArray(), 201);
+        return response()->json($postDto->toArray());
     }
 
     /**
@@ -169,7 +180,18 @@ class PostController extends Controller
      *          required=true,
      *          in="path",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="integer",
+     *              example="1"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="Authorization",
+     *          description="Bearer Autorization Token",
+     *          required=true,
+     *          in="header",
+     *          @OA\Schema(
+     *              type="string",
+     *              example="Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
      *          )
      *      ),
      *      @OA\RequestBody(
@@ -177,7 +199,7 @@ class PostController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/PostStoreRequest")
      *      ),
      *      @OA\Response(
-     *          response=200,
+     *          response=201,
      *          description="Successful operation",
      *          @OA\JsonContent(ref="#/components/schemas/PostDto")
      *      ),
@@ -238,7 +260,18 @@ class PostController extends Controller
      *          required=true,
      *          in="path",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="integer",
+     *              example="1"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="Authorization",
+     *          description="Bearer Autorization Token",
+     *          required=true,
+     *          in="header",
+     *          @OA\Schema(
+     *              type="string",
+     *              example="Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
      *          )
      *      ),
      *      @OA\Response(

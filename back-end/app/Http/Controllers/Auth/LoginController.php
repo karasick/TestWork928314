@@ -22,8 +22,7 @@ class LoginController extends Controller
     | Login Controller
     |--------------------------------------------------------------------------
     |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen.
+    | This controller handles authenticating users for the application.
     |
     */
 
@@ -49,7 +48,7 @@ class LoginController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UserCredentialsRequest")
      *      ),
      *      @OA\Response(
-     *          response=200,
+     *          response=201,
      *          description="Successful operation",
      *          @OA\JsonContent(ref="#/components/schemas/AuthUserDto")
      *      ),
@@ -121,6 +120,16 @@ class LoginController extends Controller
      *      tags={"Auth"},
      *      summary="Logout authenticated post",
      *      description="Disable authenticated user token and returns no content",
+     *      @OA\Parameter(
+     *          name="Authorization",
+     *          description="Bearer Autorization Token",
+     *          required=true,
+     *          in="header",
+     *          @OA\Schema(
+     *              type="string",
+     *              example="Bearer 30|TPKtQDvDzhyNgdms51MAta6HJcM6CXQwgrRcYxFp"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=204,
      *          description="Successful operation"

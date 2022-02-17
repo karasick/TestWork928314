@@ -31,9 +31,15 @@
 <script>
 import AppHeader from './components/UI/AppHeader'
 import AppFooter from './components/UI/AppFooter'
+import { mapActions } from 'vuex'
+
 export default {
   components: {
     AppFooter, AppHeader
+  },
+  methods: mapActions(['checkAuth']),
+  mounted () {
+    this.checkAuth()
   }
 }
 </script>
