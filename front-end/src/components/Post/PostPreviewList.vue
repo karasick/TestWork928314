@@ -1,13 +1,16 @@
 <template>
   <div>
-    <div v-for="post in posts" :key="post.id">
+    <h3 v-if="this.posts.length === 0 && !this.isLoading">No posts found. Create new one!</h3>
+    <div v-else v-for="post in this.posts" :key="post.id">
       <post-preview v-bind:post="post"/>
     </div>
+    <h3 v-if="this.isLoading">Loading...</h3>
   </div>
 </template>
 
 <script>
 import PostPreview from './PostPreview'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'PostPreviewList',
@@ -36,7 +39,8 @@ export default {
         ]
       }
     }
-  }
+  },
+  computed: mapGetters(['isLoading'])
 }
 </script>
 

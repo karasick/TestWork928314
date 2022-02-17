@@ -1,16 +1,15 @@
 <template>
   <div class="container">
-    <post v-if="post" v-bind:post="post"/>
-    <div v-else>
-      <h3>No post with that 'id'.</h3>
-    </div>
+    <h3 v-if="this.isLoading">Loading...</h3>
+    <h3 v-else-if="!this.viewedPost && !this.isLoading">No posts found. Create new one!</h3>
+    <post v-else v-bind:post="this.viewedPost"/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Post from '@/components/Post/Post.vue'
-import PostService from '@/services/PostService'
+import Post from '../components/Post/Post.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PostView',
@@ -23,30 +22,24 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      post: null
-    }
-  },
+  computed: mapGetters(['isLoading', 'viewedPost']),
   methods: {
-    async getPost (id) {
-      try {
-        this.post = await PostService.getOne(id)
-      } catch (error) {
-        console.log(error)
-      }
+    ...mapActions(['viewPost', 'loading']),
+    async updatePost (id) {
+      this.loading(true)
+      await this.viewPost({ id })
+      this.loading(false)
     }
   },
-  created () {
-    this.getPost(this.id)
+  mounted () {
+    this.updatePost(this.id)
 
-    // this.$watch(
-    //   () => this.$route.params,
-    //   (toParams, previousParams) => {
-    //     console.log('id: ' + this.id)
-    //     this.getPost(this.id)
-    //   }
-    // )
+    this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        this.updatePost(toParams.id)
+      }
+    )
   }
 }
 </script>

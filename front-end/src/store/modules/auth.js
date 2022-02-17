@@ -6,6 +6,14 @@ export default {
     user: {},
     isUserAuth: false
   },
+  getters: {
+    activeUser (state) {
+      return state.user
+    },
+    isAuth (state) {
+      return state.isUserAuth
+    }
+  },
   mutations: {
     updateUser (state, user) {
       state.user = user
@@ -32,14 +40,6 @@ export default {
 
       commit('updateUser', {})
       commit('updateIsAuth', false)
-    }
-  },
-  getters: {
-    activeUser (state) {
-      return state.user
-    },
-    isAuth (state) {
-      return state.isUserAuth
     }
   }
 }

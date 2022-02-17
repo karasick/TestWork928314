@@ -1,8 +1,14 @@
 import { $authHost, $host } from '../http'
 
 export default class PostService {
-  static async getAll () {
-    const { data } = await $host.get('/api/posts')
+  static async getLimit (page = 1, limit = 10) {
+    const { data } = await $host.get('/api/posts', {
+      params: {
+        page,
+        limit
+      }
+    })
+
     return data
   }
 
